@@ -1,0 +1,474 @@
+from IPython.display import HTML, display
+
+# Salin seluruh konten file fitly_interface.html ke dalam variabel string ini.
+# Perhatikan penggunaan triple quote (""") untuk menampung multi-line string.
+html_content = """
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitly - Stay Fit, Stay You!</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Menggunakan font Poppins sesuai saran untuk kesan modern dan friendly */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #e0f2f1; /* Nuansa biru muda/hijau pastel */
+        }
+        /* Kelas untuk warna tema Fitly */
+        .fitly-primary { background-color: #2dd4bf; } /* Tosca Green */
+        .fitly-secondary { background-color: #38bdf8; } /* Light Blue */
+        .fitly-text-primary { color: #2dd4bf; }
+        .fitly-text-secondary { color: #38bdf8; }
+        .fitly-shadow { box-shadow: 0 10px 15px -3px rgba(45, 212, 191, 0.3), 0 4px 6px -2px rgba(45, 212, 191, 0.1); }
+        .screen { display: none; }
+        .active-tab { border-top: 3px solid #2dd4bf; color: #2dd4bf; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+
+    <!-- Container Utama Aplikasi (Simulasi Layar Ponsel) -->
+    <div id="app-container" class="w-full max-w-sm h-[90vh] bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col relative">
+
+        <!-- 1. SPLASH SCREEN -->
+        <div id="splash-screen" class="screen flex flex-col items-center justify-center h-full text-white fitly-primary p-6">
+            <div class="text-9xl mb-4 animate-pulse">🩵</div>
+            <h1 class="text-4xl font-bold mb-2">Palm OIL</h1>
+            <p class="text-xl font-light text-center">“Stay Fit, Stay You!”</p>
+            <div class="absolute bottom-10">
+                <div class="h-1 w-16 fitly-secondary rounded-full animate-ping"></div>
+            </div>
+        </div>
+
+        <!-- 2. LOGIN / REGISTER SCREEN -->
+        <div id="auth-screen" class="screen flex-col h-full bg-gray-50 p-6 pt-10">
+            <!-- Ilustrasi -->
+            <div class="text-center mb-6">
+                <!-- [Image of a person exercising] - Menggunakan emoji/ikon sebagai placeholder -->
+                <div class="text-6xl mb-2">🤸‍♀️</div>
+                <h2 class="text-3xl font-bold text-gray-800">Selamat Datang!</h2>
+                <p class="text-gray-500">Mulai petualangan sehatmu.</p>
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="flex bg-white p-1 rounded-xl shadow-md mb-6">
+                <button id="tab-login" class="flex-1 py-2 text-center rounded-lg font-semibold transition bg-teal-500 text-white" onclick="showAuthTab('login')">Login</button>
+                <button id="tab-register" class="flex-1 py-2 text-center rounded-lg font-semibold text-gray-500 transition" onclick="showAuthTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form">
+                <input type="email" placeholder="Email" class="w-full p-3 mb-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-400">
+                <input type="password" placeholder="Password" class="w-full p-3 mb-6 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-400">
+                <button onclick="simulateLogin()" class="w-full fitly-primary text-white py-3 rounded-xl font-bold hover:bg-teal-600 transition fitly-shadow">Masuk</button>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" style="display:none;">
+                <input type="text" placeholder="Nama Lengkap" class="w-full p-3 mb-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-sky-400">
+                <div class="flex space-x-3 mb-3">
+                    <input type="number" placeholder="Usia" class="flex-1 p-3 border border-gray-200 rounded-xl">
+                    <select class="flex-1 p-3 border border-gray-200 rounded-xl">
+                        <option>Laki-laki</option><option>Perempuan</option>
+                    </select>
+                </div>
+                <div class="flex space-x-3 mb-3">
+                    <input type="number" placeholder="Tinggi (cm)" class="flex-1 p-3 border border-gray-200 rounded-xl">
+                    <input type="number" placeholder="Berat (kg)" class="flex-1 p-3 border border-gray-200 rounded-xl">
+                </div>
+                <select class="w-full p-3 mb-4 border border-gray-200 rounded-xl">
+                    <option disabled selected>Pilih Tujuan Kesehatan</option>
+                    <option>Diet & Penurunan Berat Badan</option>
+                    <option>Fitness & Pembentukan Otot</option>
+                    <option>Kesehatan Umum</option>
+                </select>
+                <button class="w-full fitly-secondary text-white py-3 rounded-xl font-bold hover:bg-sky-600 transition">Daftar Sekarang</button>
+            </div>
+
+            <!-- Divider & Google Button -->
+            <div class="flex items-center my-6">
+                <hr class="flex-grow border-gray-200">
+                <span class="mx-4 text-gray-400 text-sm">ATAU</span>
+                <hr class="flex-grow border-gray-200">
+            </div>
+            <button class="w-full bg-white text-gray-700 py-3 border border-gray-200 rounded-xl font-semibold flex items-center justify-center space-x-2 shadow-sm hover:shadow-md transition">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png" alt="Google Logo" class="w-5 h-5">
+                <span>Masuk dengan Google</span>
+            </button>
+        </div>
+
+        <!-- LAYAR UTAMA APLIKASI (Beranda, Makanan, Latihan, Komunitas, Profil) -->
+        <div id="main-app" class="screen flex-col h-full">
+
+            <!-- Content Area -->
+            <div id="content-area" class="flex-1 overflow-y-auto bg-white p-4">
+                <!-- 3. BERANDA (HOME SCREEN) -->
+                <div id="tab-beranda" class="tab-content pt-4">
+                    <p class="text-xl text-gray-500">Hai Zahra 👋,</p>
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800">Siap hidup sehat hari ini?</h2>
+
+                    <!-- Kartu Motivasi Harian -->
+                    <div class="bg-sky-50 p-4 rounded-xl mb-6 shadow-sm border border-sky-200">
+                        <p class="text-sky-700 italic text-sm">Motivasi Harian:</p>
+                        <p class="font-semibold text-sky-800">"Satu langkah kecil hari ini, hasil besar nanti!"</p>
+                    </div>
+
+                    <!-- Ringkasan Progres Harian -->
+                    <h3 class="text-xl font-semibold mb-4 text-gray-700">Progresmu Hari Ini</h3>
+                    <div class="grid grid-cols-3 gap-3">
+                        <!-- Kalori Harian -->
+                        <div class="bg-teal-50 p-4 rounded-xl text-center shadow-md">
+                            <p class="text-sm text-gray-500">Kalori (kkal)</p>
+                            <div class="w-16 h-16 mx-auto my-2 rounded-full border-4 border-teal-300 flex items-center justify-center font-bold fitly-text-primary text-lg">
+                                1.2K
+                            </div>
+                            <p class="text-xs text-gray-500">1.200/1.800</p>
+                        </div>
+                        <!-- Air Minum -->
+                        <div class="bg-blue-50 p-4 rounded-xl text-center shadow-md">
+                            <p class="text-sm text-gray-500">Air (gelas)</p>
+                            <div class="text-4xl my-2">💧💧💧💧💧</div>
+                            <p class="text-xs text-blue-700 font-semibold">5/8 Gelas</p>
+                        </div>
+                        <!-- Langkah Kaki -->
+                        <div class="bg-green-50 p-4 rounded-xl text-center shadow-md">
+                            <p class="text-sm text-gray-500">Langkah Kaki</p>
+                            <div class="text-2xl my-2 fitly-text-primary font-bold">7.890</div>
+                            <p class="text-xs text-gray-500">Target: 10.000</p>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Cepat -->
+                    <h3 class="text-xl font-semibold mt-8 mb-4 text-gray-700">Aksi Cepat</h3>
+                    <div class="flex justify-between space-x-3">
+                        <button class="flex-1 fitly-primary text-white py-3 rounded-xl font-semibold hover:bg-teal-600 transition shadow-md" onclick="showTab('tab-makanan')">
+                            🍎 Tambah Makanan
+                        </button>
+                        <button class="flex-1 fitly-secondary text-white py-3 rounded-xl font-semibold hover:bg-sky-600 transition shadow-md" onclick="showTab('tab-latihan')">
+                            💪 Mulai Latihan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4. MENU MAKANAN SEHAT -->
+                <div id="tab-makanan" class="tab-content pt-4 hidden">
+                    <h2 class="text-3xl font-bold fitly-text-primary mb-6">Food Tracker</h2>
+
+                    <!-- Tombol Tambah & Progres Kalori -->
+                    <div class="flex justify-between items-center mb-6">
+                        <button class="bg-yellow-400 text-gray-800 py-2 px-4 rounded-xl font-semibold flex items-center shadow-md">
+                            <span class="text-xl mr-2">➕</span> Tambah Makanan
+                        </button>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold fitly-text-primary">1.200 <span class="text-sm text-gray-500">kkal</span></p>
+                            <p class="text-xs text-gray-500">Tersisa: 600 kkal</p>
+                        </div>
+                    </div>
+
+                    <!-- Informasi Nutrisi -->
+                    <div class="bg-gray-100 p-4 rounded-xl mb-6 shadow-sm">
+                        <h4 class="font-semibold mb-2">Total Nutrisi Hari Ini</h4>
+                        <div class="flex justify-around text-center text-sm">
+                            <div><p class="font-bold text-red-500">45g</p><p>Protein</p></div>
+                            <div><p class="font-bold text-blue-500">150g</p><p>Karbo</p></div>
+                            <div><p class="font-bold text-yellow-500">30g</p><p>Lemak</p></div>
+                        </div>
+                    </div>
+
+                    <!-- Rekomendasi Menu Lokal Bandung -->
+                    <h3 class="text-xl font-semibold mb-3 text-gray-700">Menu Sehat Bandung 🥗</h3>
+                    <div class="space-y-3">
+                        <div class="bg-white p-3 rounded-xl shadow-md border border-teal-200 flex justify-between items-center">
+                            <div>
+                                <p class="font-semibold">Nasi Merah & Ayam Bakar Tanpa Kulit</p>
+                                <p class="text-sm text-gray-500">450 kkal - (Makan Siang)</p>
+                            </div>
+                            <span class="text-xl fitly-text-primary">⭐</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl shadow-md border border-teal-200 flex justify-between items-center">
+                            <div>
+                                <p class="font-semibold">Salad Buah Tropis</p>
+                                <p class="text-sm text-gray-500">180 kkal - (Snack Sore)</p>
+                            </div>
+                            <span class="text-xl fitly-text-primary">⭐</span>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl shadow-md border border-teal-200 flex justify-between items-center">
+                            <div>
+                                <p class="font-semibold">Smoothie Pisang-Oat</p>
+                                <p class="text-sm text-gray-500">300 kkal - (Sarapan)</p>
+                            </div>
+                            <span class="text-xl fitly-text-primary">⭐</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. MENU LATIHAN -->
+                <div id="tab-latihan" class="tab-content pt-4 hidden">
+                    <h2 class="text-3xl font-bold fitly-text-secondary mb-6">Workout Guide 💪</h2>
+
+                    <h3 class="text-xl font-semibold mb-3 text-gray-700">Pilih Kategorimu</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-6">
+                        <button class="bg-sky-50 p-3 rounded-xl text-center shadow-md border border-sky-200 hover:bg-sky-100">
+                            <p class="text-3xl">🏃</p> <p class="font-semibold">Cardio</p>
+                        </button>
+                        <button class="bg-sky-50 p-3 rounded-xl text-center shadow-md border border-sky-200 hover:bg-sky-100">
+                            <p class="text-3xl">🧘</p> <p class="font-semibold">Yoga</p>
+                        </button>
+                        <button class="bg-sky-50 p-3 rounded-xl text-center shadow-md border border-sky-200 hover:bg-sky-100">
+                            <p class="text-3xl">🔥</p> <p class="font-semibold">HIIT</p>
+                        </button>
+                        <button class="bg-sky-50 p-3 rounded-xl text-center shadow-md border border-sky-200 hover:bg-sky-100">
+                            <p class="text-3xl">🩰</p> <p class="font-semibold">Stretching</p>
+                        </button>
+                    </div>
+
+                    <h3 class="text-xl font-semibold mb-3 text-gray-700">Jadwal Latihan Harian</h3>
+                    <div class="bg-teal-100 p-4 rounded-xl shadow-md border border-teal-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="font-bold text-teal-800">Latihan Pagi (15 Menit)</p>
+                            <span class="text-sm font-semibold text-green-600 bg-green-200 px-2 py-1 rounded-full">Completed!</span>
+                        </div>
+                        <p class="text-sm text-teal-700">5 Gerakan Full-Body Cardio. Tonton tutorialnya sekarang!</p>
+                        <button class="mt-3 text-sm text-white fitly-primary px-3 py-1 rounded-lg">Mulai Video</button>
+                    </div>
+                </div>
+
+                <!-- 6. MENU KOMUNITAS FITLY -->
+                <div id="tab-komunitas" class="tab-content pt-4 hidden">
+                    <h2 class="text-3xl font-bold fitly-text-primary mb-6">Komunitas Fitly 🫂</h2>
+
+                    <!-- Challenge Bulanan -->
+                    <div class="bg-sky-100 p-4 rounded-xl mb-6 shadow-md border border-sky-300">
+                        <h3 class="text-xl font-bold text-sky-800 mb-2">Challenge Bulan Ini!</h3>
+                        <div class="flex items-center mb-3">
+                            <span class="text-3xl mr-3">💧</span>
+                            <div>
+                                <p class="font-semibold">30 Hari Minum Air Putih</p>
+                                <p class="text-sm text-gray-600">Gabung dengan 450 anggota lainnya!</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="text-xs font-semibold text-gray-700">Top Achievers: Zahra, Bima, Risa...</p>
+                            <button class="fitly-primary text-white text-sm px-3 py-1 rounded-lg hover:bg-teal-600">Gabung</button>
+                        </div>
+                    </div>
+
+                    <!-- Feed Aktivitas -->
+                    <h3 class="text-xl font-semibold mb-3 text-gray-700">Feed Aktivitas</h3>
+                    <div class="space-y-4">
+                        <!-- Post 1 -->
+                        <div class="bg-white p-3 rounded-xl shadow-md border border-gray-100">
+                            <div class="flex items-center mb-2">
+                                <div class="w-8 h-8 bg-pink-300 rounded-full mr-3"></div>
+                                <p class="font-semibold text-sm">Risa_Fitly</p>
+                            </div>
+                            <p class="text-sm mb-2">Selesai Challenge #7HariTanpaGorengan! Perut terasa lebih ringan dan kulit lebih bersih. Siapa selanjutnya? 🥗</p>
+                            <p class="text-xs text-gray-400">👍 15 | 💬 3</p>
+                        </div>
+                        <!-- Post 2 -->
+                        <div class="bg-white p-3 rounded-xl shadow-md border border-gray-100">
+                            <div class="flex items-center mb-2">
+                                <div class="w-8 h-8 bg-indigo-300 rounded-full mr-3"></div>
+                                <p class="font-semibold text-sm">BimaSehat</p>
+                            </div>
+                            <p class="text-sm mb-2">Latihan HIIT pagi ini 10/10! Siap menyambut kuliah online. Semangat Bandung! 🔥</p>
+                            <p class="text-xs text-gray-400">👍 28 | 💬 5</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. PROFIL PENGGUNA -->
+                <div id="tab-profil" class="tab-content pt-4 hidden">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">My Profile 👤</h2>
+
+                    <!-- Header Profil -->
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 bg-teal-400 rounded-full mr-4 border-2 border-white shadow-lg flex items-center justify-center text-3xl">👧</div>
+                        <div>
+                            <p class="text-xl font-bold">Zahra S. (19)</p>
+                            <p class="text-sm text-gray-500">Tujuan: Diet & Kesehatan Umum</p>
+                        </div>
+                    </div>
+
+                    <!-- Statistik Kesehatan -->
+                    <h3 class="text-xl font-semibold mb-3 text-gray-700">Statistik</h3>
+                    <div class="bg-gray-100 p-4 rounded-xl mb-6 shadow-sm grid grid-cols-3 gap-3 text-center">
+                        <div>
+                            <p class="text-2xl font-bold fitly-text-primary">55 kg</p>
+                            <p class="text-sm text-gray-500">Berat Badan</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold fitly-text-secondary">21.5</p>
+                            <p class="text-sm text-gray-500">BMI (Normal)</p>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold text-pink-500">1.500</p>
+                            <p class="text-sm text-gray-500">Kkal Terbakar/Minggu</p>
+                        </div>
+                    </div>
+
+                    <!-- 9. Reward Point & Achievement -->
+                    <h3 class="text-xl font-semibold mb-3 text-gray-700">Reward & Achievement</h3>
+                    <div class="bg-yellow-50 p-4 rounded-xl mb-6 shadow-md border border-yellow-300">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm font-semibold text-gray-700">Poin Hadiahmu:</p>
+                                <p class="text-3xl font-bold text-yellow-600">350 Poin</p>
+                            </div>
+                            <button class="bg-yellow-500 text-white px-3 py-1 rounded-lg font-semibold hover:bg-yellow-600">
+                                Tukar Voucher
+                            </button>
+                        </div>
+                        <h4 class="font-semibold mt-4 mb-2">Badges-mu:</h4>
+                        <div class="flex space-x-3 text-3xl">
+                            <span title="Healthy Starter">🌟</span>
+                            <span title="Fitness Streak">🥇</span>
+                            <span title="Meal Master">🥗</span>
+                        </div>
+                    </div>
+
+                    <!-- 10. Pengaturan -->
+                    <h3 class="text-xl font-semibold mb-3 text-gray-700">Pengaturan</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span>Mode Gelap / Terang</span>
+                            <span class="text-xl">🌙</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span>Pusat Bantuan & FAQ</span>
+                            <span class="text-xl">❓</span>
+                        </div>
+                        <button class="w-full bg-red-500 text-white py-2 rounded-xl mt-4 font-semibold hover:bg-red-600 transition">Logout</button>
+                    </div>
+
+                    <!-- 7. Konsultasi & Edukasi (Diintegrasikan sebagai tombol akses) -->
+                    <h3 class="text-xl font-semibold mt-8 mb-3 text-gray-700">Edukasi & Konsultasi</h3>
+                    <div class="bg-green-50 p-4 rounded-xl shadow-md border border-green-300 flex items-center justify-between">
+                        <div>
+                            <p class="font-bold text-green-800">Butuh Panduan Ahli?</p>
+                            <p class="text-sm text-green-700">Chat dengan Ahli Gizi/PT sekarang.</p>
+                        </div>
+                        <button class="fitly-primary text-white text-sm px-3 py-1 rounded-lg hover:bg-teal-600">Chat</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Tab Bar Navigasi Bawah -->
+            <div id="tab-bar" class="flex justify-around p-3 bg-white border-t border-gray-200 shadow-lg">
+                <button class="flex flex-col items-center text-gray-400 hover:text-teal-500 transition tab-button" data-tab="tab-beranda">
+                    <span class="text-2xl">🏠</span>
+                    <span class="text-xs">Beranda</span>
+                </button>
+                <button class="flex flex-col items-center text-gray-400 hover:text-teal-500 transition tab-button" data-tab="tab-makanan">
+                    <span class="text-2xl">🍎</span>
+                    <span class="text-xs">Makanan</span>
+                </button>
+                <button class="flex flex-col items-center text-gray-400 hover:text-teal-500 transition tab-button" data-tab="tab-latihan">
+                    <span class="text-2xl">💪</span>
+                    <span class="text-xs">Latihan</span>
+                </button>
+                <button class="flex flex-col items-center text-gray-400 hover:text-teal-500 transition tab-button" data-tab="tab-komunitas">
+                    <span class="text-2xl">👥</span>
+                    <span class="text-xs">Komunitas</span>
+                </button>
+                <button class="flex flex-col items-center text-gray-400 hover:text-teal-500 transition tab-button" data-tab="tab-profil">
+                    <span class="text-2xl">👤</span>
+                    <span class="text-xs">Profil</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tampilkan Splash Screen saat pertama kali dimuat
+            document.getElementById('splash-screen').style.display = 'flex';
+
+            // Pindah dari Splash Screen ke Login setelah 2 detik
+            setTimeout(() => {
+                showScreen('auth-screen');
+                showAuthTab('login');
+            }, 2000);
+
+            // Setup event listener untuk Tab Bar
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const tabId = e.currentTarget.getAttribute('data-tab');
+                    showTab(tabId);
+                });
+            });
+
+            // Set Beranda sebagai tab default setelah login
+            const berandaButton = document.querySelector('.tab-button[data-tab="tab-beranda"]');
+            if (berandaButton) {
+                // Panggil showTab setelah simulasi login
+            }
+        });
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.style.display = 'none';
+            });
+            document.getElementById(screenId).style.display = screenId === 'splash-screen' ? 'flex' : 'flex'; // Use flex for all main screens
+        }
+
+        function showAuthTab(tabName) {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+
+            if (tabName === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                tabLogin.classList.add('fitly-primary', 'text-white');
+                tabLogin.classList.remove('bg-white', 'text-gray-500');
+                tabRegister.classList.add('bg-white', 'text-gray-500');
+                tabRegister.classList.remove('fitly-primary', 'text-white');
+
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                tabRegister.classList.add('fitly-secondary', 'text-white');
+                tabRegister.classList.remove('bg-white', 'text-gray-500');
+                tabLogin.classList.add('bg-white', 'text-gray-500');
+                tabLogin.classList.remove('fitly-primary', 'text-white');
+            }
+        }
+
+        function simulateLogin() {
+            // Simulasi proses login
+            showScreen('main-app');
+            showTab('tab-beranda');
+        }
+
+        function showTab(tabId) {
+            // Sembunyikan semua konten tab
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+
+            // Tampilkan konten tab yang dipilih
+            document.getElementById(tabId).style.display = 'block';
+
+            // Kelola status aktif di Tab Bar
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('fitly-text-primary');
+                button.classList.add('text-gray-400');
+                if (button.getAttribute('data-tab') === tabId) {
+                    button.classList.add('fitly-text-primary');
+                    button.classList.remove('text-gray-400');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+"""
+
+# Menampilkan konten HTML di output sel Colab
+display(HTML(html_content))
